@@ -1,0 +1,26 @@
+graph TB
+    Client(["Client"])
+
+    subgraph App["FastAPI Application"]
+        direction TB
+        POST["POST /short\nCreate Short URL"]
+        GET["GET /{short_code}\nRedirect"]
+        Service["ShortenerService\nBusiness Logic"]
+        POST --> Service
+        GET --> Service
+    end
+
+    subgraph RedisBox["Redis"]
+        Counter["ID Counter\natomic INCR"]
+        Cache["URL Cache\n10-minute TTL"]
+    end
+
+    subgraph PGBox["PostgreSQL"]
+        DB["urls table\nPersistent Store"]
+    end
+
+    Client -->|"POST /short"| POST
+    Client -->|"GET /{code}"| GET
+    Service -->|"INCR"| Counter
+    Service <-->|"GET / SET"| Cache
+    Service <-->|"INSERT / SELECT"| DB

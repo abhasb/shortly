@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant C as Client
+    participant API as FastAPI
+    participant R as Redis
+    participant DB as PostgreSQL
+
+    C->>API: POST /short {url}
+    API->>API: Validate URL format
+    API->>R: INCR id_counter
+    R-->>API: unique integer ID
+    API->>API: Base62 encode → short_code
+    API->>DB: INSERT (short_code, original_url)
+    DB-->>API: saved
+    API-->>C: 201 Created {short_url}

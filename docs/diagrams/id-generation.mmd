@@ -1,0 +1,4 @@
+graph LR
+    A["Redis INCR"] --> B["12345\ninteger ID"]
+    B --> C["Base62 Encode"]
+    C --> D["'dnh'\nshort code"]

@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant C as Client
+    participant API as FastAPI
+    participant R as Redis
+    participant DB as PostgreSQL
+
+    C->>API: GET /{short_code}
+    API->>R: GET cache:{short_code}
+    alt Cache Hit
+        R-->>API: original_url
+    else Cache Miss
+        R-->>API: nil
+        API->>DB: SELECT WHERE short_code = ?
+        DB-->>API: original_url
+        API->>R: SET cache:{short_code} EX 600
+    end
+    API-->>C: 302 Redirect → original_url
