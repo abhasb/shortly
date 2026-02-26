@@ -18,8 +18,16 @@ def get_shortener_service():
     return ShortenerService(get_id_provider())
 
 
-@router.post("/short", response_model=URLShortnerResponse, status_code=status.HTTP_201_CREATED, summary="Create a short URL")
-def create_short_url(request: URLShortnerRequest, service: ShortenerService = Depends(get_shortener_service)):
+@router.post(
+    "/short", 
+    response_model=URLShortnerResponse, 
+    status_code=status.HTTP_201_CREATED, 
+    summary="Create a short URL"
+)
+def create_short_url(
+    request: URLShortnerRequest, 
+    service: ShortenerService = Depends(get_shortener_service)
+):
     if not is_url(request.url):
         raise HTTPException(status_code=400, detail="Invalid URL provided")
 
@@ -41,7 +49,11 @@ def create_short_url(request: URLShortnerRequest, service: ShortenerService = De
             raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{short_code}", status_code=status.HTTP_302_FOUND, summary="Redirect to original URL")
+@router.get(
+    "/{short_code}", 
+    status_code=status.HTTP_302_FOUND, 
+    summary="Redirect to original URL"
+)
 def redirect_to_url(short_code: str):
     cached_url = redis_client.get(short_code)
     if cached_url:
