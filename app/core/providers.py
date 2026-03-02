@@ -54,7 +54,6 @@ class BatchedRedisIDProvider(IDProvider):
 
 @lru_cache(maxsize=1)
 def get_id_provider() -> IDProvider:
-    print(settings.ID_PROVIDER_TYPE)
     if settings.ID_PROVIDER_TYPE == "redis":
         from app.core.redis import redis_client
         return RedisIDProvider(redis_client)
