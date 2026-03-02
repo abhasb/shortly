@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
 
 class Settings(BaseSettings):
-    ID_PROVIDER_TYPE: str = "redis"
+    ID_PROVIDER_TYPE: str = "redis_batched"
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_HOST: str
