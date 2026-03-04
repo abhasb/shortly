@@ -1,9 +1,16 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api import api_router
 from app.core.db import engine, Base
 import app.models.url
 
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
 
 class ShortlyApp(FastAPI):
 
@@ -12,6 +19,7 @@ class ShortlyApp(FastAPI):
             title="Shortly API",
             description="Shortly URL Shortener Application API",
             version="0.1.0",
+            lifespan=lifespan,
             *args,
             **kwargs,
         )
@@ -20,6 +28,6 @@ class ShortlyApp(FastAPI):
 
     def __setup_routes(self):
         self.include_router(api_router)
-    
-        
+
+
 app = ShortlyApp()

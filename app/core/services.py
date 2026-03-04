@@ -9,6 +9,6 @@ class ShortenerService:
     def __init__(self, id_provider: IDProvider):
         self.id_provider = id_provider
 
-    def generate_code(self) -> str:
-        unique_id = self.id_provider.get_next_id()
+    async def generate_code(self) -> str:
+        unique_id = await self.id_provider.get_next_id()
         return encode_base62(unique_id)

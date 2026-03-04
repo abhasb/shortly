@@ -1,9 +1,9 @@
-import redis
+import redis.asyncio as aioredis
 from app.core.config import settings
 
-redis_client = redis.Redis.from_url(
+redis_client = aioredis.Redis.from_url(
     settings.REDIS_URL,
     decode_responses=True,
-    socket_connect_timeout=5, # Don't let the app hang if Redis is down
-    health_check_interval=30  # Periodically pings Redis to keep connection alive
+    socket_connect_timeout=5,  # Don't let the app hang if Redis is down
+    health_check_interval=30   # Periodically pings Redis to keep connection alive
 )
