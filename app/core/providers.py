@@ -45,8 +45,6 @@ class BatchedRedisIDProvider(IDProvider):
         return self._ids.popleft()
 
     async def _refill(self) -> None:
-        # INCRBY returns the counter value after adding batch_size,
-        # so we own the range [end - batch_size + 1, end] exclusively.
         end = cast(int, await self._client.incrby(self._key, self._batch_size))
         start = end - self._batch_size + 1
         self._ids.extend(range(start, end + 1))
